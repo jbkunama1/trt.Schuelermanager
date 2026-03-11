@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="trtSchuelermanager – Minimalistisches Tool zur Schülerverwaltung" />
+  <title>trtSchuelermanager</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <h1 class="app-title">trtSchuelermanager</h1>
+      <p class="app-subtitle">Schülerverwaltung für Technik · Sport · WBS</p>
+    </div>
+  </header>
+
+  <!-- ===== Haupt-Inhalt ===== -->
+  <main class="app-main">
+
+    <!-- Toolbar mit Aktions-Buttons -->
+    <section class="toolbar" aria-label="Aktionen">
+      <button id="btn-add" class="btn btn-primary" type="button">
+        ＋ Schüler hinzufügen
+      </button>
+      <button id="btn-export" class="btn btn-secondary" type="button">
+        ↓ Export (CSV)
+      </button>
+    </section>
+
+    <!-- Modal: Schüler hinzufügen -->
+    <div id="modal-add" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-content">
+        <h2 id="modal-title">Neuen Schüler hinzufügen</h2>
+        <form id="form-add-student" novalidate>
+          <div class="form-group">
+            <label for="input-name">Name *</label>
+            <input type="text" id="input-name" placeholder="Vor- und Nachname" required autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="input-klasse">Klasse</label>
+            <input type="text" id="input-klasse" placeholder="z. B. 10a" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="input-note">Note</label>
+            <input type="number" id="input-note" placeholder="1–6" min="1" max="6" step="0.5" />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Speichern</button>
+            <button type="button" id="btn-cancel" class="btn btn-ghost">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Backdrop des Modals -->
+    <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+
+    <!-- Schülertabelle -->
+    <section class="table-section" aria-label="Schülerliste">
+      <h2 class="section-title">Schülerliste
+        <span id="student-count" class="badge">0</span>
+      </h2>
+
+      <!-- Hinweis, wenn keine Schüler vorhanden -->
+      <p id="empty-hint" class="empty-hint">
+        Noch keine Schüler eingetragen. Klicke auf „Schüler hinzufügen".
+      </p>
+
+      <!-- Tabelle -->
+      <div class="table-wrapper" role="region" aria-label="Schülertabelle" tabindex="0">
+        <table id="student-table" class="student-table hidden" aria-live="polite">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Klasse</th>
+              <th scope="col">Note</th>
+              <th scope="col">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Einträge werden per JavaScript eingefügt -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="app-footer">
+    <p>&copy; <span id="year"></span> trtSchuelermanager – MIT-Lizenz</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

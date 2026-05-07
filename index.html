@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realteacher Schüler Manager</title>
+    <link rel="icon" type="image/x-icon" href="RealTeacherSchuelerManager.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="RealTeacherSchuelerManager.ico">
+    <style>
+        :root {
+            --color-primary: #0284c7;
+            --color-primary-hover: #0369a1;
+            --color-primary-active: #075985;
+            --color-background: #f8fafc;
+            --color-surface: #ffffff;
+            --color-text: #0f172a;
+            --color-text-secondary: #475569;
+            --color-border: #e2e8f0;
+            --color-success: #22c55e;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-primary: #38bdf8;
+                --color-primary-hover: #0ea5e9;
+                --color-primary-active: #0284c7;
+                --color-background: #0f172a;
+                --color-surface: #1e293b;
+                --color-text: #f1f5f9;
+                --color-text-secondary: #cbd5e1;
+                --color-border: #334155;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--color-surface);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            height: 80px; /* Logo vergrößert */
+            width: auto;
+        }
+
+        .header-text h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+        }
+
+        .header-subtitle {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background: var(--color-surface);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            color: var(--color-primary);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="date"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--color-border);
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-text-secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--color-warning);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .student-card {
+            background: var(--color-surface);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .student-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .student-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            background: var(--color-border);
+        }
+
+        .student-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .student-info {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .student-info strong {
+            color: var(--color-text);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--color-surface);
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            color: var(--color-primary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: var(--color-text);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+        }
+
+        .filter-bar {
+            background: var(--color-surface);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+
+        .grade-item {
+            background: var(--color-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .grade-item-info {
+            flex: 1;
+        }
+
+        .grade-item-note {
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-right: 12px;
+        }
+
+        .grade-item-delete {
+            background: var(--color-error);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .grade-item-delete:hover {
+            opacity: 0.8;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .actions, .filter-bar, header, .modal {
+                display: none !important;
+            }
+            .student-card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .actions {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+            .student-grid {
+                grid-template-columns: 1fr;
+            }
+            .filter-bar {
+                flex-direction: column;
+            }
+            .filter-bar input,
+            .filter-bar select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h2>🎓 Realteacher Login</h2>
+            <div class="form-group">
+                <label for="passwordInput">Passwort</label>
+                <input type="password" id="passwordInput" placeholder="Passwort eingeben">
+            </div>
+            <button class="btn btn-primary" onclick="login()">Anmelden</button>
+        </div>
+    </div>
+
+    <div id="mainApp" class="hidden">
+        <div class="container">
+            <header>
+                <div class="header-content">
+                    <img src="RealTeacherSchuelerManager.png" alt="Realteacher Logo" class="header-logo">
+                    <div class="header-text">
+                        <h1>📚 Realteacher Schüler Manager</h1>
+                        <p class="header-subtitle">Verwaltung Ihrer Schüler mit allen wichtigen Informationen</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalStudents">0</div>
+                    <div class="stat-label">Schüler gesamt</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgSocial">0</div>
+                    <div class="stat-label">Ø Sozialpunkte</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgWritten">0</div>
+                    <div class="stat-label">Ø Note Schriftlich</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgOral">0</div>
+                    <div class="stat-label">Ø Note Mündlich</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" onclick="openModal()">➕ Neuer Schüler</button>
+                <button class="btn btn-secondary" onclick="exportPDF()">📄 Als PDF exportieren</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Drucken</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Suche nach Name..." oninput="filterStudents()">
+                <select id="klassFilter" onchange="filterStudents()">
+                    <option value="">Alle Klassen</option>
+                </select>
+                <select id="fachFilter" onchange="filterStudents()">
+                    <option value="">Alle Fächer</option>
+                </select>
+            </div>
+
+            <div class="student-grid" id="studentGrid">
+                <div class="empty-state">
+                    <h3>Keine Schüler vorhanden</h3>
+                    <p>Klicken Sie auf "Neuer Schüler" um zu beginnen.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Neuer Schüler</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="studentForm">
+                <input type="hidden" id="studentId">
+                
+                <div class="form-group">
+                    <label for="studentImage">Schülerfoto</label>
+                    <input type="file" id="studentImage" accept="image/*" onchange="previewImage()">
+                    <img id="imagePreview" class="image-preview hidden" alt="Vorschau">
+                    <input type="hidden" id="imageData">
+                </div>
+
+                <div class="form-group">
+                    <label for="studentName">Name *</label>
+                    <input type="text" id="studentName" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentKlasse">Klasse *</label>
+                        <input type="text" id="studentKlasse" placeholder="z.B. 7a" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentFach">Fach *</label>
+                        <input type="text" id="studentFach" placeholder="z.B. Technik, Sport" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="studentBesonderheiten">Besonderheiten</label>
+                    <textarea id="studentBesonderheiten" placeholder="z.B. LRS, Allergien, besondere Fähigkeiten..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="studentSocial">Sozialpunkte</label>
+                    <input type="number" id="studentSocial" min="0" max="100" placeholder="0-100">
+                </div>
+
+                <div class="form-group">
+                    <label for="studentOther">Sonstige Infos</label>
+                    <input type="text" id="studentOther" placeholder="z.B. Praktikum, AG...">
+                </div>
+
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--color-border);">
+
+                <h3 style="color: var(--color-primary); margin-bottom: 16px;">📝 Schriftliche Noten</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newWrittenGrade">Note</label>
+                        <input type="number" id="newWrittenGrade" min="1" max="6" step="0.1" placeholder="1.0-6.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="newWrittenGradeType">Typ</label>
+                        <input type="text" id="newWrittenGradeType" placeholder="z.B. Klassenarbeit, Test">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newWrittenGradeDate">Datum</label>
+                        <input type="date" id="newWrittenGradeDate">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button type="button" class="btn btn-primary" onclick="addWrittenGrade()" style="width: 100%;">➕ Hinzufügen</button>
+                    </div>
+                </div>
+                <div id="writtenGradesList" style="margin-top: 12px;"></div>
+                <div class="student-info" style="margin-top: 8px;">
+                    <strong>Durchschnitt:</strong> <span id="avgWrittenDisplay">-</span>
+                </div>
+
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--color-border);">
+
+                <h3 style="color: var(--color-primary); margin-bottom: 16px;">🗣️ Mündliche Noten</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newOralGrade">Note</label>
+                        <input type="number" id="newOralGrade" min="1" max="6" step="0.1" placeholder="1.0-6.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="newOralGradeType">Typ</label>
+                        <input type="text" id="newOralGradeType" placeholder="z.B. Referat, Abfrage">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newOralGradeDate">Datum</label>
+                        <input type="date" id="newOralGradeDate">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button type="button" class="btn btn-primary" onclick="addOralGrade()" style="width: 100%;">➕ Hinzufügen</button>
+                    </div>
+                </div>
+                <div id="oralGradesList" style="margin-top: 12px;"></div>
+                <div class="student-info" style="margin-top: 8px;">
+                    <strong>Durchschnitt:</strong> <span id="avgOralDisplay">-</span>
+                </div>
+
+                <div class="actions" style="margin-top: 24px;">
+                    <button type="submit" class="btn btn-success">💾 Speichern</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Abbrechen</button>
+                    <button type="button" class="btn btn-warning hidden" id="deleteBtn" onclick="deleteStudent()">🗑️ Löschen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'api.php';
+        let students = [];
+        let currentStudentId = null;
+        let currentWrittenGrades = [];
+        let currentOralGrades = [];
+
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === 'lehrer2026') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                loadStudents();
+            } else {
+                alert('Falsches Passwort!');
+            }
+        }
+
+        async function loadStudents() {
+            try {
+                const response = await fetch(API_URL + '?action=getAll');
+                students = await response.json();
+                renderStudents();
+                updateStats();
+                updateFilters();
+            } catch (error) {
+                console.error('Fehler beim Laden:', error);
+            }
+        }
+
+        function renderStudents() {
+            const grid = document.getElementById('studentGrid');
+            
+            if (students.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Keine Schüler vorhanden</h3>
+                        <p>Klicken Sie auf "Neuer Schüler" um zu beginnen.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = students.map(student => `
+                <div class="student-card" onclick="editStudent(${student.id})">
+                    ${student.image ? `<img src="${student.image}" class="student-image" alt="${student.name}">` : '<div class="student-image"></div>'}
+                    <div class="student-name">${student.name}</div>
+                    <div class="student-info"><strong>Klasse:</strong> ${student.klasse}</div>
+                    <div class="student-info"><strong>Fach:</strong> ${student.fach}</div>
+                    ${student.sozialpunkte ? `<div class="student-info"><strong>Sozialpunkte:</strong> ${student.sozialpunkte}</div>` : ''}
+                    ${student.noten_schriftlich ? `<div class="student-info"><strong>Ø Schriftlich:</strong> ${calculateAverage(student.noten_schriftlich)}</div>` : ''}
+                    ${student.noten_muendlich ? `<div class="student-info"><strong>Ø Mündlich:</strong> ${calculateAverage(student.noten_muendlich)}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function calculateAverage(gradesJson) {
+            try {
+                const grades = JSON.parse(gradesJson);
+                if (grades.length === 0) return '-';
+                const avg = grades.reduce((sum, g) => sum + g.note, 0) / grades.length;
+                return avg.toFixed(2);
+            } catch {
+                return '-';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalStudents').textContent = students.length;
+            
+            const avgSocial = students.reduce((sum, s) => sum + (parseFloat(s.sozialpunkte) || 0), 0) / students.length || 0;
+            
+            let totalWritten = 0, countWritten = 0;
+            let totalOral = 0, countOral = 0;
+            
+            students.forEach(s => {
+                if (s.noten_schriftlich) {
+                    const grades = JSON.parse(s.noten_schriftlich);
+                    grades.forEach(g => {
+                        totalWritten += g.note;
+                        countWritten++;
+                    });
+                }
+                if (s.noten_muendlich) {
+                    const grades = JSON.parse(s.noten_muendlich);
+                    grades.forEach(g => {
+                        totalOral += g.note;
+                        countOral++;
+                    });
+                }
+            });
+            
+            document.getElementById('avgSocial').textContent = avgSocial.toFixed(1);
+            document.getElementById('avgWritten').textContent = countWritten > 0 ? (totalWritten / countWritten).toFixed(2) : '0';
+            document.getElementById('avgOral').textContent = countOral > 0 ? (totalOral / countOral).toFixed(2) : '0';
+        }
+
+        function updateFilters() {
+            const klassen = [...new Set(students.map(s => s.klasse))].sort();
+            const faecher = [...new Set(students.map(s => s.fach))].sort();
+            
+            document.getElementById('klassFilter').innerHTML = '<option value="">Alle Klassen</option>' + 
+                klassen.map(k => `<option value="${k}">${k}</option>`).join('');
+            
+            document.getElementById('fachFilter').innerHTML = '<option value="">Alle Fächer</option>' + 
+                faecher.map(f => `<option value="${f}">${f}</option>`).join('');
+        }
+
+        function filterStudents() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const klassFilter = document.getElementById('klassFilter').value;
+            const fachFilter = document.getElementById('fachFilter').value;
+            
+            const filtered = students.filter(student => {
+                const matchSearch = student.name.toLowerCase().includes(search);
+                const matchKlass = !klassFilter || student.klasse === klassFilter;
+                const matchFach = !fachFilter || student.fach === fachFilter;
+                return matchSearch && matchKlass && matchFach;
+            });
+            
+            const tempStudents = students;
+            students = filtered;
+            renderStudents();
+            students = tempStudents;
+        }
+
+        function openModal() {
+            currentStudentId = null;
+            currentWrittenGrades = [];
+            currentOralGrades = [];
+            document.getElementById('modalTitle').textContent = 'Neuer Schüler';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentId').value = '';
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('deleteBtn').classList.add('hidden');
+            renderGradesList();
+            updateAverages();
+            document

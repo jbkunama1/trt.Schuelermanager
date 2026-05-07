@@ -28,7 +28,7 @@
 
 ## 🌈 Projektüberblick
 
-**trt.Schuelermanager** ist eine schlanke Webanwendung für Lehrkräfte, die Schülerdaten direkt im Browser verwalten möchten.  
+**trt.Schuelermanager** ist eine schlanke Webanwendung für Lehrkräfte, die Schülerdaten direkt im Browser verwalten möchten.
 Die Anwendung kombiniert ein einfaches HTML/JavaScript-Frontend mit einem PHP-Backend und speichert Daten lokal in einer SQLite-Datenbank.
 
 ### 💡 Ideal für
@@ -120,7 +120,7 @@ http://localhost:8000/index.html
 
 ### 4. Datenbank
 
-Beim Start nutzt die Anwendung die Datei **`schueler_manager.db`** im Projektverzeichnis.  
+Beim Start nutzt die Anwendung die Datei **`schueler_manager.db`** im Projektverzeichnis.
 Die benötigte Tabelle wird durch `api.php` automatisch angelegt.
 
 ---
@@ -211,5 +211,5 @@ Wenn dir das Projekt gefällt und du die Weiterentwicklung unterstützen möchte
 
 ## 📄 Lizenz
 
-Dieses Projekt steht unter der **MIT-Lizenz**.  
+Dieses Projekt steht unter der **MIT-Lizenz**.
 Details siehe Datei [`LICENSE`](./LICENSE).
